@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Attendance system</title>
-    <!-- Include necessary libraries -->
+   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 </head>
@@ -11,27 +11,25 @@
   <h1>Scan this QR Code to give your attendance</h1>
   <br>
     <div>
-        <!-- Display QR code -->
+        
         <div id="qrcode"></div>
     </div>
 <br>
     <div>
-        <!-- Button to download CSV file -->
+        
         <a href="/download-output">
             <button>Download CSV</button>
         </a>
     </div>
 <br>
     <div>
-        <!-- Button to change URL and reload QR code -->
-        <button id="changeURL">Change URL</button>
+                <button id="changeURL">Change URL</button>
     </div>
 <br>
     <script>
         const serverURL = "<%= serverURL %>"; // Get server URL from EJS template
         const qr = new QRCode(document.getElementById('qrcode'), serverURL);
 
-        // Function to change the URL and reload the QR code
         $('#changeURL').click(function() {
             $.post('/change-keystring', function(data) {
                 const newServerURL = `http://${location.hostname}:${location.port}/${data.newKeyString}`;

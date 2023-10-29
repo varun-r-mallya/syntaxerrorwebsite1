@@ -6,7 +6,7 @@ const app = express();
 const path = require('path');
 const port = 5000;
 app.use(express.json());
-app.set('view engine', 'ejs'); // Set EJS as the template engine
+app.set('view engine', 'ejs'); 
 app.set('views', path.join(__dirname, 'views'));
 
 // Function to generate a random key string of format AAAAAAAA
@@ -19,7 +19,7 @@ function generateKeyString() {
   return keyString;
 }
 
-let keyString = generateKeyString(); // Changing var to let for reassignment
+let keyString = generateKeyString(); 
 
 const networkInterfaces = os.networkInterfaces();
 let localIPAddress;
