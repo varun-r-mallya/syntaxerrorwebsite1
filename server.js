@@ -76,6 +76,12 @@ app.get('/download-output', (req, res) => {
     res.download(file);
   });
 
+  app.get('/index', (req, res) => {
+    res.render('index', {
+        serverURL: `http://${localIPAddress}:${port}/${keyString}`
+    });
+});
+
 app.listen(port, localIPAddress, () => {
   console.log(`Server running on http://${localIPAddress}:${port}/${keyString}`);
 });
