@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Code Generator</title>
+  <link rel="stylesheet" href="/styles.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+  <div>
+    <h1>Attendance QR generator</h1>
+    <p>Scan the QR Code with your device to get attendance:</p>
+    <div id="qrcode"></div>
+
+    <a href="/download-output" download="output.csv">
+      <button>Download Attendance</button>
+    </a>
+  </div>
+
+  <script>
+    function changeKeyString() {
+      fetch('/change-keystring', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Update the keyString value on the page
+        document.getElementById('newKeyString').innerText = data.newKeyString;
+
+        // Fetch the updated keyString and reload the QR code
+        fetch('/get-keystring')
+          .then(response => response.json())
+          .then(data => {
+            const serverURL = data.serverURL;
+            const qrCodeDiv = document.getElementById('qrcode');
+
+            // Fetch the updated QR code with the new keyString
+            fetch(`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${serverURL}`)
+              .then(response => response.blob())
+              .then(blob => {
+                // Remove the previous QR image before adding the new one
+                while (qrCodeDiv.firstChild) {
+                  qrCodeDiv.removeChild(qrCodeDiv.firstChild);
+                }
+
+                // Create and display the new QR image
+                const qrImage = document.createElement('img');
+                qrImage.src = URL.createObjectURL(blob);
+                qrCodeDiv.appendChild(qrImage);
+              })
+              .catch(error => console.error('Error fetching QR code:', error));
+          })
+          .catch(error => console.error('Error fetching keyString:', error));
+      })
+      .catch(error => console.error('Error changing keyString:', error));
+    }
+
+    // Call the function to load the QR code upon page load
+    //changeKeyString();
+
+    // Function to change QR code every 30 seconds
+    setInterval(changeKeyString, 1000000); // 30,000 milliseconds = 30 seconds
+
+  </script>
+
+  <h1>Change Code</h1>
+  <button onclick="changeKeyString()">Change Code</button>
+  <p>New Code: <span id="newKeyString"><%= serverURL.split('/').pop() %></span></p>
+</body>
+</html>
